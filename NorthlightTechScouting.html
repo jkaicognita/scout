@@ -1,0 +1,1344 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Northlight — Technology Scouting for Corporate Innovation</title>
+<meta name="description" content="Northlight scouts emerging technologies and startups for corporate teams, and turns the best signals into fast, measurable pilot projects." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='none' stroke='%23E4572E' stroke-width='3'/%3E%3Cpath d='M16 16 L16 3 A13 13 0 0 1 28 12 Z' fill='%23E4572E'/%3E%3Ccircle cx='21' cy='21' r='2.5' fill='%23E4572E'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://api.fontshare.com" />
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&f[]=satoshi@400,500,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: {
+          display: ['"Cabinet Grotesk"', 'system-ui', 'sans-serif'],
+          sans: ['Satoshi', 'system-ui', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        },
+        colors: {
+          bg: 'rgb(var(--bg) / <alpha-value>)',
+          surface: 'rgb(var(--surface) / <alpha-value>)',
+          raised: 'rgb(var(--raised) / <alpha-value>)',
+          ink: 'rgb(var(--ink) / <alpha-value>)',
+          muted: 'rgb(var(--muted) / <alpha-value>)',
+          line: 'rgb(var(--line) / <alpha-value>)',
+          signal: 'rgb(var(--signal) / <alpha-value>)',
+          onsignal: 'rgb(var(--onsignal) / <alpha-value>)',
+          cool: 'rgb(var(--cool) / <alpha-value>)',
+        },
+        maxWidth: { page: '1200px' },
+      },
+    },
+  };
+</script>
+<style>
+  :root {
+    --bg: 245 244 240;
+    --surface: 238 236 230;
+    --raised: 255 255 255;
+    --ink: 20 22 26;
+    --muted: 92 96 104;
+    --line: 214 211 202;
+    --signal: 205 72 34;
+    --onsignal: 255 255 255;
+    --cool: 38 110 120;
+  }
+  .dark {
+    --bg: 13 15 18;
+    --surface: 20 23 28;
+    --raised: 27 31 37;
+    --ink: 232 230 224;
+    --muted: 150 154 160;
+    --line: 45 50 58;
+    --signal: 255 122 77;
+    --onsignal: 20 12 8;
+    --cool: 110 190 196;
+  }
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body { transition: background-color .25s ease, color .25s ease; }
+  ::selection { background: rgb(var(--signal) / .25); }
+  :focus-visible { outline: 2px solid rgb(var(--signal)); outline-offset: 3px; border-radius: 6px; }
+  .grid-bg {
+    background-image:
+      linear-gradient(rgb(var(--line) / .55) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--line) / .55) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 70% at 70% 40%, #000 30%, transparent 75%);
+  }
+  @keyframes sweep { to { transform: rotate(360deg); } }
+  .sweep { transform-origin: 200px 200px; animation: sweep 7s linear infinite; }
+  @keyframes ping { 0% { r: 3; opacity: .9 } 100% { r: 16; opacity: 0 } }
+  .ping { animation: ping 2.4s ease-out infinite; }
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .sweep, .ping { animation: none; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    html { scroll-behavior: auto; }
+  }
+  .chip[aria-pressed="true"], .chip-check:has(input:checked) {
+    background: rgb(var(--ink)); color: rgb(var(--bg)); border-color: rgb(var(--ink));
+  }
+  .pkg-radio:has(input:checked) { border-color: rgb(var(--signal)); box-shadow: 0 0 0 1px rgb(var(--signal)); }
+  .field-error { border-color: rgb(var(--signal)) !important; }
+  input[type=range] { accent-color: rgb(var(--signal)); }
+  .blip { cursor: pointer; transition: r .2s ease; }
+  .blip.active { stroke: rgb(var(--ink)); stroke-width: 2.5; }
+  .trend-row.active { background: rgb(var(--raised)); border-color: rgb(var(--signal)); }
+</style>
+</head>
+<body class="bg-bg text-ink font-sans text-base leading-relaxed">
+
+<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 bg-ink text-bg px-3 py-2 rounded z-50">Skip to content</a>
+
+<!-- Header -->
+<header id="top" class="sticky top-0 z-40 bg-bg/80 backdrop-blur border-b border-line/70">
+  <div class="max-w-page mx-auto px-5 md:px-8 h-16 flex items-center justify-between gap-6">
+    <a href="#top" class="flex items-center gap-2.5 text-ink" aria-label="Northlight home">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="2.5"/>
+        <circle cx="16" cy="16" r="6.5" stroke="currentColor" stroke-width="1.5" opacity=".45"/>
+        <path d="M16 16 L16 3 A13 13 0 0 1 28.4 12 Z" fill="rgb(var(--signal))"/>
+        <circle cx="21.5" cy="21" r="2.2" fill="rgb(var(--signal))"/>
+      </svg>
+      <span class="font-display font-extrabold text-xl tracking-tight">Northlight</span>
+    </a>
+    <nav aria-label="Primary" class="hidden md:flex items-center gap-7 text-sm text-muted">
+      <a href="#services" class="hover:text-ink transition-colors">Services</a>
+      <a href="#pilots" class="hover:text-ink transition-colors">Pilot packages</a>
+      <a href="#radar" class="hover:text-ink transition-colors">Trend radar</a>
+      <a href="#process" class="hover:text-ink transition-colors">Process</a>
+    </nav>
+    <div class="flex items-center gap-2">
+      <button id="themeToggle" type="button" class="w-9 h-9 grid place-items-center rounded-full border border-line hover:border-ink/40 transition-colors" aria-label="Toggle dark mode">
+        <svg id="iconMoon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg id="iconSun" class="hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <a href="#contact" class="inline-flex items-center gap-2 bg-ink text-bg text-sm font-medium px-4 h-9 rounded-full hover:opacity-90 transition-opacity">Start a brief</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- Hero -->
+<section class="relative overflow-hidden border-b border-line/70">
+  <div class="absolute inset-0 grid-bg pointer-events-none" aria-hidden="true"></div>
+  <div class="relative max-w-page mx-auto px-5 md:px-8 pt-16 md:pt-24 pb-16 md:pb-24 grid lg:grid-cols-[1.1fr_0.9fr] gap-12 items-center">
+    <div>
+      <p class="font-mono text-xs uppercase tracking-[0.18em] text-muted flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-signal"></span>
+        Technology scouting · Pilot delivery
+      </p>
+      <h1 class="font-display font-extrabold tracking-tight leading-[0.95] text-[clamp(2.75rem,6.4vw,5.25rem)] mt-5">
+        Find the technology<br class="hidden sm:block" /> before your <span class="text-signal">competitors</span> do.
+      </h1>
+      <p class="mt-6 text-muted max-w-[52ch]">
+        Northlight maps startups, research labs and emerging vendors against your business problems — then runs a scoped, measurable pilot so your team decides on evidence, not slideware.
+      </p>
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+        <a href="#contact" class="inline-flex items-center gap-2 bg-signal text-onsignal font-medium px-5 h-12 rounded-full hover:brightness-110 transition">
+          Brief us on a challenge
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a href="#pilots" class="inline-flex items-center px-5 h-12 rounded-full border border-line hover:border-ink/40 transition-colors font-medium">See pilot packages</a>
+      </div>
+      <dl class="mt-12 grid grid-cols-3 max-w-md border-t border-line pt-6 gap-4">
+        <div><dt class="text-xs text-muted">Startups screened / yr</dt><dd class="font-display font-bold text-2xl mt-1" data-count="4200">0</dd></div>
+        <div><dt class="text-xs text-muted">Pilots delivered</dt><dd class="font-display font-bold text-2xl mt-1" data-count="138">0</dd></div>
+        <div><dt class="text-xs text-muted">Pilot → rollout</dt><dd class="font-display font-bold text-2xl mt-1"><span data-count="41">0</span>%</dd></div>
+      </dl>
+    </div>
+
+    <!-- Radar visual -->
+    <div class="relative mx-auto w-full max-w-[460px]">
+      <div class="rounded-[28px] border border-line bg-raised/70 backdrop-blur p-5 shadow-[0_30px_80px_-40px_rgba(0,0,0,.35)]">
+        <div class="flex items-center justify-between font-mono text-[11px] uppercase tracking-widest text-muted">
+          <span>Live scan · Q4 2026</span>
+          <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-signal animate-pulse"></span><span id="scanCount">312</span> signals</span>
+        </div>
+        <svg viewBox="0 0 400 400" class="w-full h-auto mt-3" role="img" aria-label="Animated radar showing technology signals being scanned">
+          <defs>
+            <radialGradient id="sweepGrad" cx="200" cy="200" r="190" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="rgb(var(--signal))" stop-opacity=".0"/>
+              <stop offset="1" stop-color="rgb(var(--signal))" stop-opacity=".28"/>
+            </radialGradient>
+          </defs>
+          <g fill="none" stroke="rgb(var(--line))">
+            <circle cx="200" cy="200" r="190"/><circle cx="200" cy="200" r="142"/><circle cx="200" cy="200" r="95"/><circle cx="200" cy="200" r="48"/>
+            <line x1="10" y1="200" x2="390" y2="200"/><line x1="200" y1="10" x2="200" y2="390"/>
+          </g>
+          <path class="sweep" d="M200 200 L200 10 A190 190 0 0 1 364.5 105 Z" fill="url(#sweepGrad)"/>
+          <g id="heroBlips"></g>
+          <g font-family="JetBrains Mono, monospace" font-size="10" fill="rgb(var(--muted))" letter-spacing="1">
+            <text x="210" y="24">WATCH</text><text x="210" y="72">ASSESS</text><text x="210" y="119">TRIAL</text><text x="210" y="166">ADOPT</text>
+          </g>
+        </svg>
+        <div id="heroTicker" class="mt-2 border-t border-line pt-3 font-mono text-xs text-muted min-h-[2.5rem]" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client strip -->
+  <div class="relative border-t border-line/70">
+    <div class="max-w-page mx-auto px-5 md:px-8 py-6 flex flex-wrap items-center gap-x-10 gap-y-3 text-muted">
+      <span class="font-mono text-[11px] uppercase tracking-widest">Trusted by innovation teams in</span>
+      <span class="font-display font-bold text-lg opacity-80">Automotive</span>
+      <span class="font-display font-bold text-lg opacity-80">Energy &amp; Utilities</span>
+      <span class="font-display font-bold text-lg opacity-80">Banking</span>
+      <span class="font-display font-bold text-lg opacity-80">Logistics</span>
+      <span class="font-display font-bold text-lg opacity-80">Pharma</span>
+    </div>
+  </div>
+</section>
+
+<!-- Services -->
+<section id="services" class="py-20 md:py-28">
+  <div class="max-w-page mx-auto px-5 md:px-8">
+    <div class="grid md:grid-cols-[1fr_1.4fr] gap-8 items-end mb-12 reveal">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-[0.18em] text-signal">01 — Services</p>
+        <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mt-3">From weak signal to working pilot.</h2>
+      </div>
+      <p class="text-muted max-w-[56ch]">We work as an extension of your innovation, R&amp;D or procurement team. Every engagement starts with a business problem — not a technology looking for one.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-px bg-line border border-line rounded-2xl overflow-hidden">
+      <article class="bg-bg p-7 md:p-8 reveal">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.8" class="text-signal"><circle cx="16" cy="16" r="10"/><path d="M24 24l8 8"/><path d="M12 16h8M16 12v8"/></svg>
+        <h3 class="font-bold text-lg mt-6">Tech &amp; startup scouting</h3>
+        <p class="text-muted mt-2 text-[15px]">Structured search across 60k+ startups, patent filings, university spin-offs and grant databases, filtered against your constraints.</p>
+        <ul class="mt-5 space-y-2 text-sm">
+          <li class="flex gap-2"><span class="text-signal">—</span>Longlist → shortlist with scoring rationale</li>
+          <li class="flex gap-2"><span class="text-signal">—</span>Founder and reference calls</li>
+          <li class="flex gap-2"><span class="text-signal">—</span>Technology readiness (TRL) assessment</li>
+        </ul>
+      </article>
+      <article class="bg-bg p-7 md:p-8 reveal">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.8" class="text-signal"><rect x="4" y="6" width="28" height="22" rx="3"/><path d="M4 13h28M11 20h6M11 24h12"/></svg>
+        <h3 class="font-bold text-lg mt-6">Pilot design &amp; delivery</h3>
+        <p class="text-muted mt-2 text-[15px]">We scope the pilot, negotiate terms with the vendor, set success criteria up front and run the project with your stakeholders.</p>
+        <ul class="mt-5 space-y-2 text-sm">
+          <li class="flex gap-2"><span class="text-signal">—</span>Pilot charter and KPI baseline</li>
+          <li class="flex gap-2"><span class="text-signal">—</span>Security, legal and IT fast-track</li>
+          <li class="flex gap-2"><span class="text-signal">—</span>Weekly evidence reports</li>
+        </ul>
+      </article>
+      <article class="bg-bg p-7 md:p-8 reveal">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.8" class="text-signal"><path d="M4 30h28"/><path d="M8 24l7-8 6 5 9-12"/><circle cx="30" cy="9" r="2"/></svg>
+        <h3 class="font-bold text-lg mt-6">Trend intelligence</h3>
+        <p class="text-muted mt-2 text-[15px]">A living radar of the domains that matter to you, refreshed quarterly and briefed to leadership in plain language.</p>
+        <ul class="mt-5 space-y-2 text-sm">
+          <li class="flex gap-2"><span class="text-signal">—</span>Custom technology radar</li>
+          <li class="flex gap-2"><span class="text-signal">—</span>Quarterly executive briefing</li>
+          <li class="flex gap-2"><span class="text-signal">—</span>Competitor investment tracking</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section id="pilots" class="py-20 md:py-28 bg-surface border-y border-line/70">
+  <div class="max-w-page mx-auto px-5 md:px-8">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 reveal">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-[0.18em] text-signal">02 — Pilot packages</p>
+        <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mt-3">Fixed scope. Fixed fee. Clear go/no-go.</h2>
+        <p class="text-muted mt-3 max-w-[60ch]">Vendor licence and hardware costs are passed through at cost. All packages end with a decision memo your board can act on.</p>
+      </div>
+      <div class="flex items-center gap-4 flex-wrap">
+        <div role="group" aria-label="Currency" class="inline-flex p-1 rounded-full border border-line bg-bg text-sm">
+          <button type="button" class="cur-btn px-3 h-8 rounded-full font-medium bg-ink text-bg" data-cur="EUR">EUR</button>
+          <button type="button" class="cur-btn px-3 h-8 rounded-full font-medium text-muted" data-cur="USD">USD</button>
+          <button type="button" class="cur-btn px-3 h-8 rounded-full font-medium text-muted" data-cur="CZK">CZK</button>
+        </div>
+        <label class="inline-flex items-center gap-2 text-sm cursor-pointer select-none">
+          <input id="multiDomain" type="checkbox" class="peer sr-only" />
+          <span class="w-10 h-6 rounded-full bg-line relative transition-colors peer-checked:bg-signal after:content-[''] after:absolute after:top-1 after:left-1 after:w-4 after:h-4 after:rounded-full after:bg-raised after:transition-transform peer-checked:after:translate-x-4"></span>
+          Multi-domain scope <span class="text-muted">(+35%)</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-5">
+      <!-- Package 1 -->
+      <article class="reveal rounded-2xl border border-line bg-bg p-7 flex flex-col">
+        <div class="flex items-center justify-between">
+          <h3 class="font-bold text-lg">Signal Scan</h3>
+          <span class="font-mono text-[11px] uppercase tracking-widest text-muted">2 weeks</span>
+        </div>
+        <p class="text-muted text-sm mt-2">A rapid landscape of one problem space to decide whether a pilot is worth it.</p>
+        <p class="mt-6"><span class="font-display font-bold text-4xl price" data-base="9800">€9,800</span> <span class="text-muted text-sm">fixed</span></p>
+        <ul class="mt-6 space-y-2.5 text-sm flex-1">
+          <li class="flex gap-2.5"><svg class="mt-1 shrink-0 text-cool" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>Longlist of 40–60 solutions</li>
+          <li class="flex gap-2.5"><svg class="mt-1 shrink-0 text-cool" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>Scored shortlist of 5</li>
+          <li class="flex gap-2.5"><svg class="mt-1 shrink-0 text-cool" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>2 vendor demo sessions</li>
+          <li class="flex gap-2.5"><svg class="mt-1 shrink-0 text-cool" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>Go / no-go recommendation</li>
+        </ul>
+        <button type="button" data-package="signal-scan" class="pick-pkg mt-8 h-11 rounded-full border border-ink/80 font-medium hover:bg-ink hover:text-bg transition-colors">Choose Signal Scan</button>
+      </article>
+
+      <!-- Package 2 (featured) -->
+      <article class="reveal rounded-2xl border-2 border-signal bg-raised p-7 flex flex-col relative shadow-[0_24px_60px_-30px_rgb(var(--signal)/.45)]">
+        <span class="absolute -top-3 left-7 bg-signal text-onsignal font-mono text-[11px] uppercase tracking-widest px-2.5 py-1 rounded-full">Most chosen</span>
+        <div class="flex items-center justify-between">
+          <h3 class="font-bold text-lg">Pilot Sprint</h3>
+          <span class="font-mono text-[11px] uppercase tracking-widest text-muted">6 weeks</span>
+        </div>
+        <p class="text-muted text-sm mt-2">Scouting plus a live proof-of-concept with one shortlisted vendor in your environment.</p>
+        <p class="mt-6"><span class="font-display font-bold text-4xl price" data-base="28500">€28,500</span> <span class="text-muted text-sm">fixed</span></p>
+        <ul class="mt-6 space-y-2.5 text-sm flex-1">
+          <li class="flex gap-2.5"><svg class="mt-1 shrink-0 text-signal" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>Everything in Signal Scan</li>
+          <li class="flex gap-2.5"><svg class="mt-1 shrink-0 text-signal" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>Pilot charter with 3–5 KPIs</li>
+          <li class="flex gap-2.5"><svg class="mt-1 shrink-0 text-signal" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>Vendor term sheet negotiation</li>
+          <li class="flex gap-2.5"><svg class="mt-1 shrink-0 text-signal" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>4-week hands-on PoC, weekly reports</li>
+          <li class="flex gap-2.5"><svg class="mt-1 shrink-0 text-signal" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>Business case &amp; rollout plan</li>
+        </ul>
+        <button type="button" data-package="pilot-sprint" class="pick-pkg mt-8 h-11 rounded-full bg-signal text-onsignal font-medium hover:brightness-110 transition">Choose Pilot Sprint</button>
+      </article>
+
+      <!-- Package 3 -->
+      <article class="reveal rounded-2xl border border-line bg-bg p-7 flex flex-col">
+        <div class="flex items-center justify-between">
+          <h3 class="font-bold text-lg">Venture Bridge</h3>
+          <span class="font-mono text-[11px] uppercase tracking-widest text-muted">12 weeks</span>
+        </div>
+        <p class="text-muted text-sm mt-2">Parallel pilots with up to three vendors and a handover into procurement or investment.</p>
+        <p class="mt-6"><span class="text-muted text-sm">from</span> <span class="font-display font-bold text-4xl price" data-base="64000">€64,000</span></p>
+        <ul class="mt-6 space-y-2.5 text-sm flex-1">
+          <li class="flex gap-2.5"><svg class="mt-1 shrink-0 text-cool" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>Everything in Pilot Sprint</li>
+          <li class="flex gap-2.5"><svg class="mt-1 shrink-0 text-cool" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>Up to 3 parallel pilots</li>
+          <li class="flex gap-2.5"><svg class="mt-1 shrink-0 text-cool" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>CVC / M&amp;A due-diligence pack</li>
+          <li class="flex gap-2.5"><svg class="mt-1 shrink-0 text-cool" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>Dedicated engagement lead</li>
+          <li class="flex gap-2.5"><svg class="mt-1 shrink-0 text-cool" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>Steering-committee briefings</li>
+        </ul>
+        <button type="button" data-package="venture-bridge" class="pick-pkg mt-8 h-11 rounded-full border border-ink/80 font-medium hover:bg-ink hover:text-bg transition-colors">Choose Venture Bridge</button>
+      </article>
+    </div>
+    <p class="text-xs text-muted mt-6">Prices exclude VAT. USD and CZK figures are indicative conversions for planning only.</p>
+  </div>
+</section>
+
+<!-- Trend radar -->
+<section id="radar" class="py-20 md:py-28">
+  <div class="max-w-page mx-auto px-5 md:px-8">
+    <div class="grid md:grid-cols-[1fr_1.4fr] gap-8 items-end mb-10 reveal">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-[0.18em] text-signal">03 — Trend radar</p>
+        <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mt-3">What we're tracking this quarter.</h2>
+      </div>
+      <p class="text-muted max-w-[56ch]">A sample of our Q4 2026 radar. Rings show our view on enterprise readiness — from <strong class="text-ink font-medium">Adopt</strong> (proven, pilot now) to <strong class="text-ink font-medium">Watch</strong> (early, monitor). Select a signal to read our note.</p>
+    </div>
+
+    <div class="flex flex-wrap gap-2 mb-8 reveal" role="group" aria-label="Filter by domain" id="domainFilters"></div>
+
+    <div class="grid lg:grid-cols-[0.95fr_1.05fr] gap-8 items-start">
+      <div class="lg:sticky lg:top-24 reveal">
+        <div class="rounded-2xl border border-line bg-surface p-4 md:p-6">
+          <svg id="radarSvg" viewBox="0 0 440 440" class="w-full h-auto" role="img" aria-label="Technology radar chart"></svg>
+          <div class="flex flex-wrap items-center justify-between gap-3 mt-3 font-mono text-[11px] uppercase tracking-wider text-muted">
+            <span>Centre → edge: Adopt · Trial · Assess · Watch</span>
+            <span class="flex items-center gap-3"><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-signal"></span>Pilot-ready</span><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-cool"></span>Emerging</span></span>
+          </div>
+        </div>
+        <div id="trendDetail" class="mt-4 rounded-2xl border border-line bg-raised p-5 min-h-[150px]" aria-live="polite"></div>
+      </div>
+      <ol id="trendList" class="space-y-2"></ol>
+    </div>
+  </div>
+</section>
+
+<!-- Process -->
+<section id="process" class="py-20 md:py-28 bg-ink text-bg">
+  <div class="max-w-page mx-auto px-5 md:px-8">
+    <p class="font-mono text-xs uppercase tracking-[0.18em] text-signal reveal">04 — How a pilot runs</p>
+    <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mt-3 max-w-[22ch] reveal">Six weeks from brief to decision.</h2>
+    <ol class="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-bg/15 rounded-2xl overflow-hidden">
+      <li class="bg-ink p-6 reveal"><span class="font-mono text-xs text-signal">Week 0</span><h3 class="font-bold text-lg mt-3">Brief</h3><p class="text-sm opacity-70 mt-2">90-minute problem framing with your stakeholders. We agree on constraints and what "success" means.</p></li>
+      <li class="bg-ink p-6 reveal"><span class="font-mono text-xs text-signal">Weeks 1–2</span><h3 class="font-bold text-lg mt-3">Scout</h3><p class="text-sm opacity-70 mt-2">Landscape, scoring and vendor calls. You get a shortlist with a clear rationale for each pick.</p></li>
+      <li class="bg-ink p-6 reveal"><span class="font-mono text-xs text-signal">Weeks 2–5</span><h3 class="font-bold text-lg mt-3">Pilot</h3><p class="text-sm opacity-70 mt-2">Hands-on proof-of-concept with real data, measured against the baseline set on day one.</p></li>
+      <li class="bg-ink p-6 reveal"><span class="font-mono text-xs text-signal">Week 6</span><h3 class="font-bold text-lg mt-3">Decide</h3><p class="text-sm opacity-70 mt-2">Decision memo, business case and rollout or exit plan. No sunk-cost pilots that drag on.</p></li>
+    </ol>
+    <figure class="mt-14 grid md:grid-cols-[auto_1fr] gap-6 items-start max-w-3xl reveal">
+      <span class="font-display font-extrabold text-6xl leading-none text-signal" aria-hidden="true">“</span>
+      <blockquote>
+        <p class="font-display font-medium text-2xl leading-snug">Northlight found us a computer-vision vendor we'd never heard of, and we had defect-detection numbers in front of the board in five weeks.</p>
+        <figcaption class="text-sm opacity-70 mt-4">Head of Manufacturing Innovation, Tier-1 automotive supplier (sample testimonial)</figcaption>
+      </blockquote>
+    </figure>
+  </div>
+</section>
+
+<!-- Contact intake -->
+<section id="contact" class="py-20 md:py-28">
+  <div class="max-w-page mx-auto px-5 md:px-8 grid lg:grid-cols-[0.8fr_1.2fr] gap-12">
+    <div class="reveal">
+      <p class="font-mono text-xs uppercase tracking-[0.18em] text-signal">05 — Client intake</p>
+      <h2 class="font-display font-bold text-3xl md:text-4xl tracking-tight mt-3">Tell us what you're trying to solve.</h2>
+      <p class="text-muted mt-4 max-w-[46ch]">Three short steps. A scouting lead will reply within two business days with a first view on the landscape and a suggested pilot format.</p>
+      <ul class="mt-8 space-y-4 text-sm">
+        <li class="flex gap-3"><span class="font-mono text-signal">→</span><span>NDA available before the first call</span></li>
+        <li class="flex gap-3"><span class="font-mono text-signal">→</span><span>We never share your brief with vendors without approval</span></li>
+        <li class="flex gap-3"><span class="font-mono text-signal">→</span><span>Offices in Prague, Munich and Amsterdam</span></li>
+      </ul>
+      <div class="mt-10 rounded-2xl border border-line p-5 bg-surface">
+        <p class="text-xs text-muted font-mono uppercase tracking-widest">Prefer email?</p>
+        <p class="mt-1 font-medium">scouting@northlight.example</p>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="rounded-2xl border border-line bg-raised p-6 md:p-8 shadow-[0_30px_80px_-50px_rgba(0,0,0,.4)]">
+        <!-- Stepper -->
+        <ol id="stepper" class="grid grid-cols-3 gap-2 mb-8 text-xs" aria-label="Form progress">
+          <li class="step" data-step="1"><div class="h-1 rounded-full bg-line overflow-hidden"><div class="bar h-full bg-signal w-0 transition-all duration-500"></div></div><p class="mt-2 font-medium">1 · Organization</p></li>
+          <li class="step" data-step="2"><div class="h-1 rounded-full bg-line overflow-hidden"><div class="bar h-full bg-signal w-0 transition-all duration-500"></div></div><p class="mt-2 font-medium text-muted">2 · Scope</p></li>
+          <li class="step" data-step="3"><div class="h-1 rounded-full bg-line overflow-hidden"><div class="bar h-full bg-signal w-0 transition-all duration-500"></div></div><p class="mt-2 font-medium text-muted">3 · Review</p></li>
+        </ol>
+
+        <form id="intake" novalidate>
+          <!-- Step 1 -->
+          <fieldset class="panel space-y-5" data-panel="1">
+            <legend class="sr-only">Organization details</legend>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label for="fullName" class="text-sm font-medium">Full name</label>
+                <input id="fullName" name="fullName" required autocomplete="name" class="mt-1.5 w-full h-11 px-3.5 rounded-lg border border-line bg-bg focus:border-ink outline-none" />
+                <p class="err text-xs text-signal mt-1 hidden">Please enter your name.</p>
+              </div>
+              <div>
+                <label for="role" class="text-sm font-medium">Role / title</label>
+                <input id="role" name="role" required autocomplete="organization-title" placeholder="e.g. Head of Innovation" class="mt-1.5 w-full h-11 px-3.5 rounded-lg border border-line bg-bg focus:border-ink outline-none placeholder:text-muted/70" />
+                <p class="err text-xs text-signal mt-1 hidden">Please enter your role.</p>
+              </div>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label for="company" class="text-sm font-medium">Company</label>
+                <input id="company" name="company" required autocomplete="organization" class="mt-1.5 w-full h-11 px-3.5 rounded-lg border border-line bg-bg focus:border-ink outline-none" />
+                <p class="err text-xs text-signal mt-1 hidden">Please enter your company.</p>
+              </div>
+              <div>
+                <label for="email" class="text-sm font-medium">Work email</label>
+                <input id="email" name="email" type="email" required autocomplete="email" placeholder="name@company.com" class="mt-1.5 w-full h-11 px-3.5 rounded-lg border border-line bg-bg focus:border-ink outline-none placeholder:text-muted/70" />
+                <p class="err text-xs text-signal mt-1 hidden">Please use a valid work email (no free webmail).</p>
+              </div>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label for="industry" class="text-sm font-medium">Industry</label>
+                <select id="industry" name="industry" required class="mt-1.5 w-full h-11 px-3 rounded-lg border border-line bg-bg focus:border-ink outline-none">
+                  <option value="">Select…</option>
+                  <option>Automotive &amp; mobility</option><option>Energy &amp; utilities</option><option>Banking &amp; insurance</option>
+                  <option>Logistics &amp; supply chain</option><option>Pharma &amp; healthcare</option><option>Manufacturing</option>
+                  <option>Retail &amp; consumer</option><option>Public sector</option><option>Other</option>
+                </select>
+                <p class="err text-xs text-signal mt-1 hidden">Please select an industry.</p>
+              </div>
+              <div>
+                <span class="text-sm font-medium" id="sizeLabel">Company size</span>
+                <div class="mt-1.5 grid grid-cols-3 gap-2" role="radiogroup" aria-labelledby="sizeLabel">
+                  <label class="chip-check text-center text-sm h-11 grid place-items-center rounded-lg border border-line cursor-pointer transition-colors"><input type="radio" name="size" value="250–1k" class="sr-only" required />250–1k</label>
+                  <label class="chip-check text-center text-sm h-11 grid place-items-center rounded-lg border border-line cursor-pointer transition-colors"><input type="radio" name="size" value="1k–10k" class="sr-only" />1k–10k</label>
+                  <label class="chip-check text-center text-sm h-11 grid place-items-center rounded-lg border border-line cursor-pointer transition-colors"><input type="radio" name="size" value="10k+" class="sr-only" />10k+</label>
+                </div>
+                <p class="err text-xs text-signal mt-1 hidden" data-for="size">Please choose a size.</p>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Step 2 -->
+          <fieldset class="panel space-y-6 hidden" data-panel="2">
+            <legend class="sr-only">Scope of the engagement</legend>
+            <div>
+              <span class="text-sm font-medium">Domains of interest <span class="text-muted font-normal">(pick any)</span></span>
+              <div id="domainChecks" class="mt-2 flex flex-wrap gap-2"></div>
+              <p class="err text-xs text-signal mt-1 hidden" data-for="domains">Pick at least one domain.</p>
+            </div>
+            <div>
+              <label for="challenge" class="text-sm font-medium">The business challenge</label>
+              <textarea id="challenge" name="challenge" rows="4" required maxlength="800" placeholder="e.g. We lose ~3% of output to surface defects that manual inspection misses. We want to test automated visual inspection on one line." class="mt-1.5 w-full px-3.5 py-3 rounded-lg border border-line bg-bg focus:border-ink outline-none resize-y placeholder:text-muted/70"></textarea>
+              <div class="flex justify-between">
+                <p class="err text-xs text-signal mt-1 hidden">Please describe the challenge in at least 30 characters.</p>
+                <p class="text-xs text-muted mt-1 ml-auto"><span id="charCount">0</span>/800</p>
+              </div>
+            </div>
+            <div>
+              <span class="text-sm font-medium">Preferred package</span>
+              <div class="mt-2 grid sm:grid-cols-3 gap-2">
+                <label class="pkg-radio rounded-lg border border-line p-3 cursor-pointer transition"><input type="radio" name="package" value="signal-scan" class="sr-only" /><span class="block font-medium text-sm">Signal Scan</span><span class="block text-xs text-muted">2 weeks</span></label>
+                <label class="pkg-radio rounded-lg border border-line p-3 cursor-pointer transition"><input type="radio" name="package" value="pilot-sprint" class="sr-only" /><span class="block font-medium text-sm">Pilot Sprint</span><span class="block text-xs text-muted">6 weeks</span></label>
+                <label class="pkg-radio rounded-lg border border-line p-3 cursor-pointer transition"><input type="radio" name="package" value="venture-bridge" class="sr-only" /><span class="block font-medium text-sm">Venture Bridge</span><span class="block text-xs text-muted">12 weeks</span></label>
+              </div>
+              <label class="pkg-radio mt-2 flex items-center gap-2 rounded-lg border border-line px-3 py-2.5 cursor-pointer text-sm"><input type="radio" name="package" value="not-sure" class="sr-only" checked />Not sure yet — recommend one</label>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label for="timeline" class="text-sm font-medium">Ideal start</label>
+                <select id="timeline" name="timeline" class="mt-1.5 w-full h-11 px-3 rounded-lg border border-line bg-bg focus:border-ink outline-none">
+                  <option>Within 4 weeks</option><option selected>Next quarter</option><option>In 6+ months</option><option>Exploring only</option>
+                </select>
+              </div>
+              <div>
+                <label for="budget" class="text-sm font-medium flex justify-between">Indicative budget <output id="budgetOut" class="text-signal font-mono text-xs">€30k</output></label>
+                <input id="budget" name="budget" type="range" min="10" max="150" step="5" value="30" class="mt-4 w-full" />
+                <div class="flex justify-between text-[11px] text-muted font-mono"><span>€10k</span><span>€150k+</span></div>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Step 3 -->
+          <fieldset class="panel space-y-5 hidden" data-panel="3">
+            <legend class="sr-only">Review and submit</legend>
+            <div class="rounded-xl bg-surface border border-line p-5">
+              <p class="font-mono text-[11px] uppercase tracking-widest text-muted mb-3">Brief summary</p>
+              <dl id="summary" class="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm"></dl>
+            </div>
+            <label class="flex items-start gap-3 text-sm cursor-pointer">
+              <input type="checkbox" name="nda" class="mt-1 w-4 h-4 accent-[rgb(var(--signal))]" />
+              <span>Send us an NDA before the first call</span>
+            </label>
+            <label class="flex items-start gap-3 text-sm cursor-pointer">
+              <input id="consent" type="checkbox" name="consent" required class="mt-1 w-4 h-4 accent-[rgb(var(--signal))]" />
+              <span>I agree that Northlight may process this information to respond to my enquiry.</span>
+            </label>
+            <p class="err text-xs text-signal hidden" data-for="consent">Consent is required to submit.</p>
+          </fieldset>
+
+          <div id="formNav" class="mt-8 flex items-center justify-between gap-3">
+            <button type="button" id="backBtn" class="h-11 px-5 rounded-full border border-line font-medium invisible hover:border-ink/40 transition-colors">Back</button>
+            <button type="button" id="nextBtn" class="h-11 px-6 rounded-full bg-ink text-bg font-medium hover:opacity-90 transition inline-flex items-center gap-2">Continue <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+        </form>
+
+        <!-- Success -->
+        <div id="success" class="hidden text-center py-8" tabindex="-1">
+          <svg class="mx-auto text-signal" width="56" height="56" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="28" cy="28" r="25"/><path d="M17 29l7 7 15-16"/></svg>
+          <h3 class="font-display font-bold text-2xl mt-5">Brief received.</h3>
+          <p class="text-muted mt-2 max-w-[42ch] mx-auto">Thanks, <span id="sName"></span>. A scouting lead will reach out to <span id="sEmail" class="text-ink font-medium"></span> within two business days.</p>
+          <p class="font-mono text-xs text-muted mt-6">Reference <span id="sRef" class="text-ink"></span></p>
+          <button type="button" id="resetBtn" class="mt-8 h-11 px-5 rounded-full border border-line font-medium hover:border-ink/40 transition-colors">Submit another brief</button>
+        </div>
+      </div>
+      <p class="text-xs text-muted mt-3">Prototype: submissions are not sent anywhere — the payload is logged to the browser console.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="border-t border-line">
+  <div class="max-w-page mx-auto px-5 md:px-8 py-10 flex flex-col md:flex-row gap-6 md:items-center justify-between text-sm text-muted">
+    <div class="flex items-center gap-2.5 text-ink">
+      <svg width="22" height="22" viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="2.5"/><path d="M16 16 L16 3 A13 13 0 0 1 28.4 12 Z" fill="rgb(var(--signal))"/><circle cx="21.5" cy="21" r="2.2" fill="rgb(var(--signal))"/></svg>
+      <span class="font-display font-bold">Northlight</span><span class="text-muted">· Technology scouting</span>
+    </div>
+    <nav aria-label="Footer" class="flex flex-wrap gap-6">
+      <a href="#services" class="hover:text-ink">Services</a><a href="#pilots" class="hover:text-ink">Pilots</a><a href="#radar" class="hover:text-ink">Radar</a><a href="#contact" class="hover:text-ink">Contact</a>
+    </nav>
+    <p>© 2026 Northlight (fictional prototype)</p>
+  </div>
+</footer>
+
+<script>
+/* ---------- Theme ---------- */
+(() => {
+  const root = document.documentElement;
+  const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const set = (dark) => {
+    root.classList.toggle('dark', dark);
+    document.getElementById('iconMoon').classList.toggle('hidden', dark);
+    document.getElementById('iconSun').classList.toggle('hidden', !dark);
+  };
+  set(prefersDark);
+  document.getElementById('themeToggle').addEventListener('click', () => set(!root.classList.contains('dark')));
+})();
+
+/* ---------- Data ---------- */
+const DOMAINS = [
+  { id: 'ai', name: 'Applied AI', angle: [0, 90] },
+  { id: 'energy', name: 'Energy & Climate', angle: [90, 180] },
+  { id: 'industry', name: 'Industry 4.0', angle: [180, 270] },
+  { id: 'bio', name: 'Health & Bio', angle: [270, 360] },
+];
+const RINGS = ['Adopt', 'Trial', 'Assess', 'Watch'];
+const TRENDS = [
+  { t: 'Agentic workflow automation', d: 'ai', r: 1, note: 'Multi-step AI agents operating inside ERP and ticketing systems. Pilot on contained back-office processes with human sign-off.', kpi: 'Typical pilot KPI: 30–50% cycle-time reduction' },
+  { t: 'Retrieval-augmented enterprise search', d: 'ai', r: 0, note: 'Mature pattern for grounding LLMs on internal documents. Main work is data access control and evaluation, not the model.', kpi: 'Typical pilot KPI: answer accuracy ≥ 85% on gold set' },
+  { t: 'Small on-device language models', d: 'ai', r: 2, note: 'Compact models running on edge hardware for offline or privacy-sensitive use. Quality gap narrowing quickly.', kpi: 'Typical pilot KPI: latency < 200 ms on target device' },
+  { t: 'Synthetic data for model training', d: 'ai', r: 2, note: 'Generated datasets to cover rare events and protect personal data. Validate carefully against real-world drift.', kpi: 'Typical pilot KPI: model recall on rare classes' },
+  { t: 'Long-duration energy storage', d: 'energy', r: 2, note: 'Iron-air, thermal and flow batteries for 10–100 hour storage. Commercial pilots emerging at utility scale.', kpi: 'Typical pilot KPI: levelised cost of storage' },
+  { t: 'Industrial heat pumps', d: 'energy', r: 0, note: 'High-temperature heat pumps replacing gas for process heat up to ~200 °C. Strong payback where electricity is cheap.', kpi: 'Typical pilot KPI: CO₂ and fuel cost per tonne output' },
+  { t: 'Carbon accounting automation', d: 'energy', r: 1, note: 'Software that pulls activity data from ERP and suppliers for Scope 3 reporting under CSRD.', kpi: 'Typical pilot KPI: share of spend with primary emission data' },
+  { t: 'Direct air capture', d: 'energy', r: 3, note: 'Still expensive per tonne; relevant mostly for offtake agreements and long-term net-zero strategies.', kpi: 'Watch: cost trajectory below $300/t' },
+  { t: 'Computer-vision quality inspection', d: 'industry', r: 0, note: 'Camera plus model on the line to catch surface defects. Well-proven; the differentiator is integration speed.', kpi: 'Typical pilot KPI: defect escape rate, false rejects' },
+  { t: 'Industrial digital twins', d: 'industry', r: 1, note: 'Live simulation of plants and assets for scheduling and what-if analysis. Start with one bottleneck asset.', kpi: 'Typical pilot KPI: OEE uplift on target line' },
+  { t: 'Humanoid & mobile manipulators', d: 'industry', r: 3, note: 'Rapid progress in general-purpose robots. Most deployments are still demos; watch for paid multi-unit fleets.', kpi: 'Watch: tasks/hour vs. human baseline' },
+  { t: 'Private 5G campus networks', d: 'industry', r: 2, note: 'Dedicated cellular for factories and ports. Worth assessing where Wi-Fi reliability blocks automation.', kpi: 'Typical pilot KPI: uptime and latency at AGV handover' },
+  { t: 'AI-assisted clinical documentation', d: 'bio', r: 1, note: 'Ambient scribing that drafts clinical notes from consultations. Strong adoption pull; compliance review is key.', kpi: 'Typical pilot KPI: minutes saved per consultation' },
+  { t: 'Generative protein design', d: 'bio', r: 2, note: 'Models proposing novel proteins and enzymes. Relevant for pharma, food and industrial biotech R&D.', kpi: 'Typical pilot KPI: hit rate vs. traditional screening' },
+  { t: 'Remote patient monitoring wearables', d: 'bio', r: 0, note: 'Medical-grade wearables feeding care teams. Reimbursement and integration with hospital systems drive success.', kpi: 'Typical pilot KPI: readmission rate' },
+  { t: 'Organ-on-chip testing', d: 'bio', r: 3, note: 'Micro-engineered tissue models as an alternative to some animal testing. Regulatory openness is increasing.', kpi: 'Watch: regulatory acceptance in EU/US' },
+];
+
+/* ---------- Hero radar blips ---------- */
+(() => {
+  const g = document.getElementById('heroBlips');
+  const ns = 'http://www.w3.org/2000/svg';
+  const radii = [24, 72, 118, 166];
+  TRENDS.forEach((tr, i) => {
+    const dom = DOMAINS.find(d => d.id === tr.d);
+    const a = (dom.angle[0] + 12 + ((i * 37) % 66)) * Math.PI / 180;
+    const r = radii[tr.r] + ((i * 13) % 20) - 10;
+    const x = 200 + r * Math.sin(a), y = 200 - r * Math.cos(a);
+    const c = document.createElementNS(ns, 'circle');
+    c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', 3.5);
+    c.setAttribute('fill', tr.r < 2 ? 'rgb(var(--signal))' : 'rgb(var(--cool))');
+    g.appendChild(c);
+    if (i % 4 === 0) {
+      const p = document.createElementNS(ns, 'circle');
+      p.setAttribute('cx', x); p.setAttribute('cy', y); p.setAttribute('r', 3);
+      p.setAttribute('fill', 'none'); p.setAttribute('stroke', 'rgb(var(--signal))');
+      p.classList.add('ping'); p.style.animationDelay = (i * 0.3) + 's';
+      g.appendChild(p);
+    }
+  });
+  const ticker = document.getElementById('heroTicker');
+  const count = document.getElementById('scanCount');
+  let k = 0, n = 312;
+  const tick = () => {
+    const tr = TRENDS[k++ % TRENDS.length];
+    const dom = DOMAINS.find(d => d.id === tr.d).name;
+    ticker.innerHTML = `<span class="text-signal">●</span> ${tr.t} <span class="opacity-60">· ${dom} · ${RINGS[tr.r]}</span>`;
+    count.textContent = (n += Math.floor(Math.random() * 3)).toString();
+  };
+  tick(); setInterval(tick, 2600);
+})();
+
+/* ---------- Counters & reveal ---------- */
+(() => {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const target = +el.dataset.count;
+    if (reduce) { el.textContent = target.toLocaleString('en-US'); return; }
+    const t0 = performance.now(), dur = 1400;
+    const step = (t) => {
+      const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * e).toLocaleString('en-US');
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
+})();
+
+/* ---------- Pricing ---------- */
+(() => {
+  const RATES = { EUR: { r: 1, fmt: v => '€' + v.toLocaleString('en-US') }, USD: { r: 1.09, fmt: v => '$' + v.toLocaleString('en-US') }, CZK: { r: 25.2, fmt: v => v.toLocaleString('cs-CZ') + ' Kč' } };
+  let cur = 'EUR';
+  const multi = document.getElementById('multiDomain');
+  const render = () => {
+    document.querySelectorAll('.price').forEach(el => {
+      let v = +el.dataset.base * RATES[cur].r * (multi.checked ? 1.35 : 1);
+      v = cur === 'CZK' ? Math.round(v / 1000) * 1000 : Math.round(v / 100) * 100;
+      el.textContent = RATES[cur].fmt(v);
+    });
+  };
+  document.querySelectorAll('.cur-btn').forEach(b => b.addEventListener('click', () => {
+    cur = b.dataset.cur;
+    document.querySelectorAll('.cur-btn').forEach(x => {
+      const on = x === b;
+      x.classList.toggle('bg-ink', on); x.classList.toggle('text-bg', on); x.classList.toggle('text-muted', !on);
+      x.setAttribute('aria-pressed', on);
+    });
+    render();
+  }));
+  multi.addEventListener('change', render);
+
+  document.querySelectorAll('.pick-pkg').forEach(b => b.addEventListener('click', () => {
+    const r = document.querySelector(`input[name=package][value="${b.dataset.package}"]`);
+    if (r) r.checked = true;
+    document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => document.getElementById('fullName').focus({ preventScroll: true }), 600);
+  }));
+})();
+
+/* ---------- Trend radar ---------- */
+(() => {
+  const svg = document.getElementById('radarSvg');
+  const list = document.getElementById('trendList');
+  const detail = document.getElementById('trendDetail');
+  const filters = document.getElementById('domainFilters');
+  const ns = 'http://www.w3.org/2000/svg';
+  const C = 220, R = [52, 104, 156, 208];
+  let filter = 'all', activeIdx = null;
+
+  // Static rings and quadrants
+  let s = '';
+  R.slice().reverse().forEach((r, i) => s += `<circle cx="${C}" cy="${C}" r="${r}" fill="rgb(var(--${i % 2 ? 'surface' : 'bg'}))" stroke="rgb(var(--line))"/>`);
+  s += `<line x1="${C}" y1="10" x2="${C}" y2="430" stroke="rgb(var(--line))"/><line x1="10" y1="${C}" x2="430" y2="${C}" stroke="rgb(var(--line))"/>`;
+  const labels = [[C + 108, 26, 'APPLIED AI'], [C + 108, 422, 'ENERGY & CLIMATE'], [C - 108, 422, 'INDUSTRY 4.0'], [C - 108, 26, 'HEALTH & BIO']];
+  labels.forEach(([x, y, l]) => s += `<text x="${x}" y="${y}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="1.2" fill="rgb(var(--muted))">${l}</text>`);
+  s += '<g id="blipLayer"></g>';
+  svg.innerHTML = s;
+  const layer = svg.querySelector('#blipLayer');
+
+  // Position blips: deterministic spread in quadrant/ring
+  const perCell = {};
+  TRENDS.forEach((tr, i) => {
+    const key = tr.d + tr.r; perCell[key] = (perCell[key] || 0) + 1;
+    const nth = perCell[key];
+    const dom = DOMAINS.find(d => d.id === tr.d);
+    const a = (dom.angle[0] + 22 + nth * 22 + (tr.r * 9)) * Math.PI / 180;
+    const inner = tr.r === 0 ? 14 : R[tr.r - 1];
+    const r = (inner + R[tr.r]) / 2;
+    tr.x = C + r * Math.sin(a); tr.y = C - r * Math.cos(a); tr.i = i;
+  });
+
+  const buildFilters = () => {
+    const all = [{ id: 'all', name: 'All domains' }, ...DOMAINS];
+    filters.innerHTML = all.map(d => `<button type="button" class="chip px-4 h-9 rounded-full border border-line text-sm font-medium transition-colors hover:border-ink/40" data-f="${d.id}" aria-pressed="${d.id === filter}">${d.name}</button>`).join('');
+    filters.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { filter = b.dataset.f; activeIdx = null; buildFilters(); render(); }));
+  };
+
+  const render = () => {
+    const visible = TRENDS.filter(t => filter === 'all' || t.d === filter);
+    layer.innerHTML = '';
+    TRENDS.forEach(tr => {
+      const on = filter === 'all' || tr.d === filter;
+      const c = document.createElementNS(ns, 'circle');
+      c.setAttribute('cx', tr.x); c.setAttribute('cy', tr.y); c.setAttribute('r', tr.i === activeIdx ? 11 : 8);
+      c.setAttribute('fill', tr.r < 2 ? 'rgb(var(--signal))' : 'rgb(var(--cool))');
+      c.setAttribute('opacity', on ? 1 : 0.15);
+      c.classList.add('blip'); if (tr.i === activeIdx) c.classList.add('active');
+      c.setAttribute('tabindex', on ? 0 : -1); c.setAttribute('role', 'button'); c.setAttribute('aria-label', tr.t);
+      c.addEventListener('click', () => select(tr.i)); c.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(tr.i); } });
+      const title = document.createElementNS(ns, 'title'); title.textContent = tr.t; c.appendChild(title);
+      layer.appendChild(c);
+      const num = document.createElementNS(ns, 'text');
+      num.setAttribute('x', tr.x); num.setAttribute('y', tr.y + 3.5); num.setAttribute('text-anchor', 'middle');
+      num.setAttribute('font-size', '9'); num.setAttribute('font-family', 'JetBrains Mono, monospace'); num.setAttribute('font-weight', '500');
+      num.setAttribute('fill', 'rgb(var(--onsignal))'); num.setAttribute('pointer-events', 'none'); num.setAttribute('opacity', on ? 1 : 0.2);
+      if (tr.r >= 2) num.setAttribute('fill', '#fff');
+      num.textContent = tr.i + 1;
+      layer.appendChild(num);
+    });
+
+    list.innerHTML = visible.map(tr => {
+      const dom = DOMAINS.find(d => d.id === tr.d).name;
+      return `<li><button type="button" data-i="${tr.i}" class="trend-row w-full text-left grid grid-cols-[2rem_1fr_auto] items-center gap-3 px-4 py-3.5 rounded-xl border border-line/80 hover:border-ink/30 transition-colors ${tr.i === activeIdx ? 'active' : ''}">
+        <span class="font-mono text-xs text-muted">${String(tr.i + 1).padStart(2, '0')}</span>
+        <span><span class="block font-medium">${tr.t}</span><span class="block text-xs text-muted mt-0.5">${dom}</span></span>
+        <span class="font-mono text-[11px] uppercase tracking-wider px-2 py-1 rounded-full ${tr.r < 2 ? 'bg-signal/15 text-signal' : 'bg-cool/15 text-cool'}">${RINGS[tr.r]}</span>
+      </button></li>`;
+    }).join('');
+    list.querySelectorAll('button').forEach(b => b.addEventListener('click', () => select(+b.dataset.i)));
+
+    if (activeIdx === null) {
+      detail.innerHTML = `<p class="font-mono text-[11px] uppercase tracking-widest text-muted">Scout's note</p>
+        <p class="mt-2 text-muted">Select a signal on the radar or in the list to see our assessment and a typical pilot KPI. Showing <strong class="text-ink">${visible.length}</strong> of ${TRENDS.length} signals.</p>`;
+    } else {
+      const tr = TRENDS[activeIdx];
+      const dom = DOMAINS.find(d => d.id === tr.d).name;
+      detail.innerHTML = `<div class="flex items-center justify-between gap-3"><p class="font-mono text-[11px] uppercase tracking-widest text-muted">${dom} · ${RINGS[tr.r]}</p><span class="font-mono text-xs text-muted">#${String(tr.i + 1).padStart(2, '0')}</span></div>
+        <h3 class="font-bold text-lg mt-2">${tr.t}</h3>
+        <p class="text-muted text-[15px] mt-1.5">${tr.note}</p>
+        <p class="text-sm mt-3 flex gap-2"><span class="text-signal">→</span>${tr.kpi}</p>
+        <a href="#contact" data-domain="${tr.d}" class="brief-domain inline-flex mt-4 text-sm font-medium underline underline-offset-4 decoration-signal hover:text-signal">Scout this for my company</a>`;
+      detail.querySelector('.brief-domain').addEventListener('click', () => {
+        const cb = document.querySelector(`#domainChecks input[value="${tr.d}"]`); if (cb) cb.checked = true;
+        const ch = document.getElementById('challenge');
+        if (!ch.value) { ch.value = `We'd like to explore "${tr.t}" for our business. `; ch.dispatchEvent(new Event('input')); }
+      });
+    }
+  };
+  const select = (i) => { activeIdx = activeIdx === i ? null : i; render(); };
+  buildFilters(); render();
+})();
+
+/* ---------- Intake form ---------- */
+(() => {
+  const form = document.getElementById('intake');
+  const panels = [...form.querySelectorAll('.panel')];
+  const nextBtn = document.getElementById('nextBtn');
+  const backBtn = document.getElementById('backBtn');
+  const steps = [...document.querySelectorAll('#stepper .step')];
+  const PKG = { 'signal-scan': 'Signal Scan', 'pilot-sprint': 'Pilot Sprint', 'venture-bridge': 'Venture Bridge', 'not-sure': 'Recommend one' };
+  const FREE_MAIL = /@(gmail|yahoo|hotmail|outlook|seznam|icloud|aol|proton(mail)?)\./i;
+  let step = 1;
+
+  // Domain checkboxes
+  const dc = document.getElementById('domainChecks');
+  dc.innerHTML = [...DOMAINS, { id: 'other', name: 'Other / open' }].map(d =>
+    `<label class="chip-check px-3.5 h-9 inline-flex items-center rounded-full border border-line text-sm cursor-pointer transition-colors"><input type="checkbox" name="domains" value="${d.id}" class="sr-only" />${d.name}</label>`).join('');
+
+  const challenge = document.getElementById('challenge');
+  challenge.addEventListener('input', () => document.getElementById('charCount').textContent = challenge.value.length);
+  const budget = document.getElementById('budget');
+  const bOut = document.getElementById('budgetOut');
+  budget.addEventListener('input', () => bOut.textContent = budget.value >= 150 ? '€150k+' : `€${budget.value}k`);
+
+  const showErr = (el, errEl, bad) => {
+    if (el) el.classList.toggle('field-error', bad);
+    if (errEl) errEl.classList.toggle('hidden', !bad);
+    if (el) el.setAttribute('aria-invalid', bad);
+  };
+
+  const validate = (n) => {
+    let ok = true, first = null;
+    const flag = (el, errEl, bad) => { showErr(el, errEl, bad); if (bad) { ok = false; first = first || el || errEl; } };
+    if (n === 1) {
+      ['fullName', 'role', 'company', 'industry'].forEach(id => {
+        const el = document.getElementById(id);
+        flag(el, el.parentElement.querySelector('.err'), !el.value.trim());
+      });
+      const em = document.getElementById('email');
+      const bad = !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em.value) || FREE_MAIL.test(em.value);
+      flag(em, em.parentElement.querySelector('.err'), bad);
+      const size = form.querySelector('input[name=size]:checked');
+      flag(null, form.querySelector('[data-for=size]'), !size);
+      if (!size && !first) first = form.querySelector('input[name=size]');
+    }
+    if (n === 2) {
+      const any = form.querySelectorAll('input[name=domains]:checked').length > 0;
+      flag(null, form.querySelector('[data-for=domains]'), !any);
+      if (!any && first === form.querySelector('[data-for=domains]')) first = form.querySelector('input[name=domains]');
+      flag(challenge, challenge.parentElement.querySelector('.err'), challenge.value.trim().length < 30);
+    }
+    if (n === 3) {
+      const c = document.getElementById('consent');
+      flag(null, form.querySelector('[data-for=consent]'), !c.checked);
+      if (!c.checked) first = c;
+    }
+    if (first && first.focus) first.focus();
+    return ok;
+  };
+
+  const collect = () => {
+    const fd = new FormData(form);
+    return {
+      fullName: fd.get('fullName'), role: fd.get('role'), company: fd.get('company'), email: fd.get('email'),
+      industry: fd.get('industry'), size: fd.get('size'),
+      domains: fd.getAll('domains'), challenge: fd.get('challenge'), package: fd.get('package'),
+      timeline: fd.get('timeline'), budgetK: +fd.get('budget'), nda: !!fd.get('nda'),
+    };
+  };
+
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const buildSummary = () => {
+    const d = collect();
+    const domNames = d.domains.map(id => (DOMAINS.find(x => x.id === id) || { name: 'Other / open' }).name).join(', ');
+    const rows = [
+      ['Contact', `${d.fullName}, ${d.role}`], ['Company', `${d.company} · ${d.size} employees`],
+      ['Email', d.email], ['Industry', d.industry],
+      ['Domains', domNames], ['Package', PKG[d.package]],
+      ['Start', d.timeline], ['Budget', d.budgetK >= 150 ? '€150k+' : `~€${d.budgetK}k`],
+    ];
+    document.getElementById('summary').innerHTML = rows.map(([k, v]) => `<div><dt class="text-xs text-muted">${k}</dt><dd class="font-medium break-words">${esc(v)}</dd></div>`).join('') +
+      `<div class="sm:col-span-2"><dt class="text-xs text-muted">Challenge</dt><dd class="text-muted">${esc(d.challenge)}</dd></div>`;
+  };
+
+  const go = (n) => {
+    step = n;
+    panels.forEach(p => p.classList.toggle('hidden', +p.dataset.panel !== n));
+    steps.forEach((s, i) => {
+      s.querySelector('.bar').style.width = i + 1 < n ? '100%' : i + 1 === n ? '50%' : '0';
+      s.querySelector('p').classList.toggle('text-muted', i + 1 > n);
+      if (i + 1 === n) s.setAttribute('aria-current', 'step'); else s.removeAttribute('aria-current');
+    });
+    backBtn.classList.toggle('invisible', n === 1);
+    nextBtn.innerHTML = n === 3 ? 'Submit brief' : 'Continue <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+    nextBtn.classList.toggle('bg-signal', n === 3); nextBtn.classList.toggle('text-onsignal', n === 3);
+    nextBtn.classList.toggle('bg-ink', n !== 3); nextBtn.classList.toggle('text-bg', n !== 3);
+    if (n === 3) buildSummary();
+  };
+
+  nextBtn.addEventListener('click', () => {
+    if (!validate(step)) return;
+    if (step < 3) return go(step + 1);
+    // Submit
+    nextBtn.disabled = true; nextBtn.textContent = 'Sending…'; nextBtn.classList.add('opacity-70');
+    const payload = collect();
+    setTimeout(() => {
+      console.log('[Northlight intake] payload', payload);
+      const ref = 'NL-' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
+      document.getElementById('sName').textContent = payload.fullName.split(' ')[0];
+      document.getElementById('sEmail').textContent = payload.email;
+      document.getElementById('sRef').textContent = ref;
+      form.classList.add('hidden'); document.getElementById('stepper').classList.add('hidden');
+      const s = document.getElementById('success'); s.classList.remove('hidden'); s.focus();
+      nextBtn.disabled = false; nextBtn.classList.remove('opacity-70');
+    }, 900);
+  });
+  backBtn.addEventListener('click', () => step > 1 && go(step - 1));
+
+  // Live clear errors
+  form.addEventListener('input', e => {
+    const el = e.target;
+    if (el.classList.contains('field-error')) showErr(el, el.parentElement.querySelector('.err'), false);
+  });
+  form.addEventListener('change', e => {
+    const n = e.target.name;
+    if (['size', 'domains', 'consent'].includes(n)) form.querySelector(`[data-for=${n}]`)?.classList.add('hidden');
+  });
+  form.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.tagName === 'INPUT') { e.preventDefault(); nextBtn.click(); } });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    form.reset(); document.getElementById('charCount').textContent = '0'; bOut.textContent = '€30k';
+    form.classList.remove('hidden'); document.getElementById('stepper').classList.remove('hidden');
+    document.getElementById('success').classList.add('hidden'); go(1);
+  });
+  go(1);
+})();
+</script>
+<script data-pplx-inline-edit>
+(function () {
+  if (window === window.top) return;
+
+  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://perplexity.localhost","http://localhost:1420","http://127.0.0.1:1420","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
+  const MAX_FONT_BYTES = 500 * 1024;
+  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
+  const DEFAULT_LINE_HEIGHT = 16;
+  let scrollForwarding = false;
+  let scrollRaf = 0;
+  let trustedTopOrigin = null;
+
+  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
+  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
+  // across multiple labels.
+  function matchesAllowedOrigin(origin) {
+    if (!origin) return false;
+    for (const entry of allowedParentOrigins) {
+      if (!entry.includes("*")) {
+        if (entry === origin) return true;
+        continue;
+      }
+      const pattern = new RegExp(
+        "^" +
+          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
+          "$",
+      );
+      if (pattern.test(origin)) return true;
+    }
+    return false;
+  }
+
+  // Trust decision: when the sender is same-origin-visible (event.origin is a
+  // real origin like https://www.perplexity.ai) we trust event.origin directly.
+  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
+  // broker's stamped `parentOrigin` to identify the top window. The fallback
+  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
+  // on the response path (see postToTrustedTop) to ensure replies can't be
+  // delivered to anyone but the actual top window of that claimed origin.
+  function getTrustedParentOrigin(event) {
+    const forwardedParentOrigin =
+      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
+    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
+    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
+  }
+
+  // All responses go to window.top with targetOrigin = the allowlisted origin.
+  // An attacker that iframes us inside their own null-origin broker can claim
+  // any parentOrigin they like, but the browser will drop the reply whenever
+  // the real top's origin doesn't match — so the screenshot never leaves.
+  function postToTrustedTop(message) {
+    if (!trustedTopOrigin) return;
+    try {
+      window.top.postMessage(message, trustedTopOrigin);
+    } catch (_error) {}
+  }
+
+  const PICK_CAPABILITIES = ["pick"];
+  const PICK_CHAIN_LENGTH = 4;
+  const PICK_MAX_TEXT_CHARS = 120;
+  const PICK_MAX_HTML_CHARS = 300;
+
+  function truncate(value, maxChars) {
+    return value.length > maxChars ? value.slice(0, maxChars - 1) + "…" : value;
+  }
+
+  function isPickableElement(element) {
+    return (
+      element instanceof Element &&
+      element !== document.documentElement &&
+      element !== document.body
+    );
+  }
+
+  function resolvePickTarget(x, y) {
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+    const element = document.elementFromPoint(x, y);
+    return isPickableElement(element) ? element.closest("svg") || element : null;
+  }
+
+  function pickLabel(element) {
+    if (element.id) return element.localName + "#" + element.id;
+    return [element.localName].concat(Array.from(element.classList).slice(0, 2)).join(".");
+  }
+
+  // Only attributes that help find the element in source. data-* values and URL
+  // query strings or fragments can carry tokens.
+  const PICK_ATTRIBUTES = new Set([
+    "id",
+    "class",
+    "name",
+    "type",
+    "role",
+    "alt",
+    "aria-label",
+    "href",
+    "src",
+  ]);
+
+  function pickAttributeValue(attribute) {
+    return attribute.name === "href" || attribute.name === "src"
+      ? attribute.value.split(/[?#]/)[0]
+      : attribute.value;
+  }
+
+  function describePickElement(element) {
+    const chain = [];
+    for (
+      let current = element;
+      isPickableElement(current) && chain.length < PICK_CHAIN_LENGTH;
+      current = current.parentElement
+    ) {
+      chain.unshift(current);
+    }
+    const attributes = Array.from(element.attributes)
+      .filter((attribute) => PICK_ATTRIBUTES.has(attribute.name))
+      .map((attribute) => ` ${attribute.name}="${pickAttributeValue(attribute).replace(/"/g, "&quot;")}"`)
+      .join("");
+    const text = (element.innerText || element.textContent || "").replace(/\s+/g, " ").trim();
+    return {
+      chain: chain.map(pickLabel),
+      html: truncate(`<${element.localName}${attributes}>`, PICK_MAX_HTML_CHARS),
+      text: text ? truncate(text, PICK_MAX_TEXT_CHARS) : undefined,
+    };
+  }
+
+  // Hover asks once per frame, and innerText on a large section forces layout,
+  // so only the rect is re-read while the pointer stays on the same element.
+  // Clicks ask for fresh details since the page may have changed the element.
+  let lastPick = null;
+
+  function describePickTarget(element, fresh) {
+    if (fresh || lastPick?.element !== element) {
+      lastPick = { element, details: describePickElement(element) };
+    }
+    const rect = element.getBoundingClientRect();
+    return {
+      rect: { x: rect.left, y: rect.top, width: rect.width, height: rect.height },
+      ...lastPick.details,
+    };
+  }
+
+  function inlineAll(original, clone) {
+    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
+
+    try {
+      const computedStyle = getComputedStyle(original);
+      // cssText on a computed style is the serialized declaration in modern
+      // Chromium/Safari — a single read beats enumerating ~400 longhand
+      // properties. Firefox returns "" here, so we fall back on empty.
+      const serialized = computedStyle.cssText;
+      if (serialized) {
+        clone.style.cssText = serialized;
+      } else {
+        const parts = new Array(computedStyle.length);
+        for (let index = 0; index < computedStyle.length; index += 1) {
+          const property = computedStyle[index];
+          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
+        }
+        clone.style.cssText = parts.join("");
+      }
+    } catch (_error) {}
+
+    const originalChildren = original.children;
+    const clonedChildren = clone.children;
+    for (
+      let index = 0;
+      index < originalChildren.length && index < clonedChildren.length;
+      index += 1
+    ) {
+      inlineAll(originalChildren[index], clonedChildren[index]);
+    }
+  }
+
+  function extractFontUrl(srcValue) {
+    const matches = [
+      ...srcValue.matchAll(
+        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
+      ),
+    ];
+    if (matches.length === 0) return null;
+    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
+    if (woff2) return woff2[1];
+    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
+    if (woff) return woff[1];
+    return matches[0][1];
+  }
+
+  // Cache resolved font URL -> data URI across captures. Fonts on a page
+  // essentially never change, and a batch run emits multiple captures back to
+  // back — without this we'd refetch + re-base64 every time.
+  const fontDataUriCache = new Map();
+  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
+
+  async function fetchAsDataUri(url) {
+    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
+    let dataUri = null;
+    try {
+      const response = await fetch(url, { mode: "cors", credentials: "omit" });
+      if (response.ok) {
+        const blob = await response.blob();
+        if (blob.size <= MAX_FONT_BYTES) {
+          dataUri = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () =>
+              resolve(typeof reader.result === "string" ? reader.result : null);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(blob);
+          });
+        }
+      }
+    } catch (_error) {
+      dataUri = null;
+    }
+    fontDataUriCache.set(url, dataUri);
+    return dataUri;
+  }
+
+  function collectFontFaceRuleTexts() {
+    const rules = [];
+    for (const sheet of document.styleSheets) {
+      let cssRules;
+      try {
+        cssRules = sheet.cssRules;
+      } catch (_error) {
+        continue;
+      }
+      if (!cssRules) continue;
+      for (const rule of cssRules) {
+        const cssText = rule.cssText || "";
+        if (cssText.startsWith("@font-face")) rules.push(cssText);
+      }
+    }
+    return rules;
+  }
+
+  async function buildInlinedFontCss() {
+    const ruleTexts = collectFontFaceRuleTexts();
+    if (ruleTexts.length === 0) return null;
+
+    const resolved = ruleTexts.map((cssText) => {
+      if (!SRC_DECLARATION_RE.test(cssText)) return null;
+      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
+      if (!srcMatch) return null;
+      const url = extractFontUrl(srcMatch[1]);
+      if (!url) return null;
+      try {
+        return { cssText, url: new URL(url, document.baseURI).href };
+      } catch (_error) {
+        return null;
+      }
+    });
+
+    const dataUris = await Promise.all(
+      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
+    );
+
+    const inlined = [];
+    let totalBytes = 0;
+    for (let index = 0; index < resolved.length; index += 1) {
+      const entry = resolved[index];
+      const dataUri = dataUris[index];
+      if (!entry || !dataUri) continue;
+      const approxBytes = dataUri.length * 0.75;
+      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
+      totalBytes += approxBytes;
+      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
+    }
+    return inlined.length > 0 ? inlined.join("\n") : null;
+  }
+
+  function stripExternal(clone) {
+    const images = clone.querySelectorAll("img");
+    for (let index = 0; index < images.length; index += 1) {
+      const src = images[index].getAttribute("src");
+      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
+    }
+
+    const elements = clone.querySelectorAll("*");
+    for (let index = 0; index < elements.length; index += 1) {
+      const style = elements[index].style.cssText;
+      if (style && style.includes("url(")) {
+        elements[index].style.cssText = style.replace(
+          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
+          "none",
+        );
+      }
+    }
+  }
+
+  function emitScroll() {
+    scrollRaf = 0;
+    if (!scrollForwarding) return;
+    postToTrustedTop({
+      type: "INLINE_EDIT_SCROLL",
+      scrollX: window.scrollX,
+      scrollY: window.scrollY,
+      capabilities: PICK_CAPABILITIES,
+    });
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scrollForwarding || scrollRaf) return;
+      scrollRaf = requestAnimationFrame(emitScroll);
+    },
+    { passive: true, capture: true },
+  );
+
+  async function handleCaptureRequest(event) {
+    const requestId = event.data.requestId;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    function postResult(dataUrl) {
+      postToTrustedTop({
+        type: "INLINE_EDIT_SCREENSHOT_RESULT",
+        requestId,
+        dataUrl,
+        scrollX,
+        scrollY,
+      });
+    }
+
+    try {
+      // Wait for any pending web fonts to resolve so both inline metrics and
+      // the @font-face inlining below see the same loaded faces.
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (_error) {}
+      }
+
+      const clone = document.documentElement.cloneNode(true);
+      inlineAll(document.documentElement, clone);
+
+      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
+      for (let index = 0; index < removedNodes.length; index += 1) {
+        removedNodes[index].remove();
+      }
+
+      stripExternal(clone);
+
+      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
+      // can resolve them — external font URLs aren't fetched during
+      // foreignObject rendering, which would otherwise force a fallback face
+      // and change text metrics.
+      const inlinedFontCss = await buildInlinedFontCss();
+      if (inlinedFontCss) {
+        const styleEl = document.createElement("style");
+        styleEl.textContent = inlinedFontCss;
+        const head = clone.querySelector("head");
+        if (head) head.appendChild(styleEl);
+        else clone.insertBefore(styleEl, clone.firstChild);
+      }
+
+      const html = new XMLSerializer().serializeToString(clone);
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+        '<foreignObject width="100%" height="100%">' +
+        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
+        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
+        html +
+        "</div></div></foreignObject></svg>";
+      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      const image = new Image();
+      image.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        postResult(canvas.toDataURL("image/png"));
+      };
+      image.onerror = function () {
+        postResult(null);
+      };
+      image.src = svgUrl;
+    } catch (_error) {
+      postResult(null);
+    }
+  }
+
+  window.addEventListener("message", function (event) {
+    if (!event.data) return;
+    // Only accept messages from the direct parent frame. Blocks sibling /
+    // unrelated-window postMessage senders that could otherwise reach us.
+    if (event.source !== window.parent) return;
+
+    const trustedParentOrigin = getTrustedParentOrigin(event);
+    if (!trustedParentOrigin) return;
+    trustedTopOrigin = trustedParentOrigin;
+
+    if (event.data.type === "INLINE_EDIT_PICK") {
+      const element = resolvePickTarget(event.data.x, event.data.y);
+      postToTrustedTop({
+        type: "INLINE_EDIT_PICK_RESULT",
+        seq: event.data.seq,
+        target: element ? describePickTarget(element, event.data.fresh === true) : null,
+      });
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
+      scrollForwarding = true;
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
+      scrollForwarding = false;
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      scrollRaf = 0;
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_BY") {
+      const { deltaX, deltaY, deltaMode } = event.data;
+      if (!scrollForwarding || !Number.isFinite(deltaX) || !Number.isFinite(deltaY)) return;
+      if (deltaMode !== 0 && deltaMode !== 1 && deltaMode !== 2) return;
+      const lineHeight =
+        parseFloat(getComputedStyle(document.documentElement).lineHeight) || DEFAULT_LINE_HEIGHT;
+      const scaleX = deltaMode === 1 ? lineHeight : deltaMode === 2 ? window.innerWidth : 1;
+      const scaleY = deltaMode === 1 ? lineHeight : deltaMode === 2 ? window.innerHeight : 1;
+      // The selection overlay receives the wheel event instead of this iframe.
+      // Instant scrolling preserves trackpad deltas even on smooth-scroll sites.
+      window.scrollBy({ left: deltaX * scaleX, top: deltaY * scaleY, behavior: "instant" });
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
+
+    handleCaptureRequest(event);
+  });
+})();
+
+
+</script></body>
+</html>
